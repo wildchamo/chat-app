@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      itty-router:
+        specifier: ^5.0.18
+        version: 5.0.18
     devDependencies:
       typescript:
         specifier: ^5.5.2
@@ -405,6 +409,9 @@ packages:
   is-arrayish@0.3.2:
     resolution: {integrity: sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==}
 
+  itty-router@5.0.18:
+    resolution: {integrity: sha512-mK3ReOt4ARAGy0V0J7uHmArG2USN2x0zprZ+u+YgmeRjXTDbaowDy3kPcsmQY6tH+uHhDgpWit9Vqmv/4rTXwA==}
+
   mime@3.0.0:
     resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}
     engines: {node: '>=10.0.0'}
@@ -779,6 +786,8 @@ snapshots:
   glob-to-regexp@0.4.1: {}
 
   is-arrayish@0.3.2: {}
+
+  itty-router@5.0.18: {}
 
   mime@3.0.0: {}
 

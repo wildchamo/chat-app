@@ -1,4 +1,17 @@
 import { DurableObject } from "cloudflare:workers";
+import { Router, error } from "itty-router";
+import html from "../public/app.html";
+
+const router = Router();
+
+router.get("/", (request, env, ctx) => {
+	return new Response(html, {
+		headers: {
+			"Content-Type": "text/html;charset=utf-8",
+		},
+	});
+});
+router.all("*", () => error(404));
 
 /**
  * Welcome to Cloudflare Workers! This is your first Durable Objects application.
@@ -48,6 +61,7 @@ export default {
 	 * @returns The response to be sent back to the client
 	 */
 	async fetch(request, env, ctx): Promise<Response> {
+		return router.fetch(request, env, ctx);
 		// Create a `DurableObjectId` for an instance of the `MyDurableObject`
 		// class named "foo". Requests from all Workers to the instance named
 		// "foo" will go to a single globally unique Durable Object instance.
