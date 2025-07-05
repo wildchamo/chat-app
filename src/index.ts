@@ -1,6 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { Router, error } from "itty-router";
-import html from "../public/app.html";
+import html from "./app.html";
+import { Chat } from "./create-do";
 
 const router = Router();
 
@@ -10,6 +11,23 @@ router.get("/", (request, env, ctx) => {
 			"Content-Type": "text/html;charset=utf-8",
 		},
 	});
+});
+router.get("/api/chat", async (request, env, ctx) => {
+	const chatId = new URL(request.url).searchParams.get("chatId");
+	if (!chatId) {
+		return error(400, "chatId is required");
+	}
+
+	const doId = env.CHATS.idFromName(chatId);
+
+	const chat = env.CHATS.get(doId)
+
+
+	if (request.headers.get("Upgrade") === "websocket") {
+		return new Response("expected websocket", { status: 400 });
+	}
+
+	return chat.fetch(request.clone());
 });
 router.all("*", () => error(404));
 
