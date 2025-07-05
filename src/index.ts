@@ -1,7 +1,8 @@
 import { DurableObject } from "cloudflare:workers";
-import { Router, error } from "itty-router";
 import html from "./app.html";
-import { Chat } from "./create-do";
+export { Chat } from "./create-do";
+
+import { Router, error } from "itty-router";
 
 const router = Router();
 
@@ -12,7 +13,7 @@ router.get("/", (request, env, ctx) => {
 		},
 	});
 });
-router.get("/api/chat", async (request, env, ctx) => {
+router.get("/api/chat", (request, env, ctx) => {
 	const chatId = new URL(request.url).searchParams.get("chatId");
 	if (!chatId) {
 		return error(400, "chatId is required");
@@ -20,10 +21,9 @@ router.get("/api/chat", async (request, env, ctx) => {
 
 	const doId = env.CHATS.idFromName(chatId);
 
-	const chat = env.CHATS.get(doId)
+	const chat = env.CHATS.get(doId);
 
-
-	if (request.headers.get("Upgrade") === "websocket") {
+	if (request.headers.get("Upgrade") !== "websocket") {
 		return new Response("expected websocket", { status: 400 });
 	}
 
