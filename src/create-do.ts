@@ -22,6 +22,7 @@ export class Chat extends DurableObject {
 
 	async webSocketMessage(ws: WebSocket, message: string) {
 		const user_message = this.formatUserMessage(message);
+		this.persistHistory(user_message);
 		this.broadcastMessage(user_message);
 	}
 
@@ -67,9 +68,29 @@ export class Chat extends DurableObject {
 
 		this.ctx.acceptWebSocket(server);
 
+		await this.ctx.storage.get<FormattedUserMessage[]>("message-history").then(messages => {
+			if (messages) {
+				for (const message of messages) {
+					server.send(JSON.stringify(message));
+				}
+			}
+		})
+
 		return new Response(null, {
 			status: 101,
 			webSocket: client,
 		});
+	}
+
+	async persistHistory(user_message: FormattedUserMessage) {
+		const history = await this.ctx.storage.get("message-history");
+		if (!history) {
+			if (!Array.isArray(history)) {
+				await this.ctx.storage.put("message-history", [user_message]);
+			} else {
+				history.push(user_message);
+				await this.ctx.storage.put("message-history", history);
+			}
+		}
 	}
 }
